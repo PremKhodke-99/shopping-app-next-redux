@@ -1,7 +1,15 @@
 import { fetchProductDetails } from "@/actions"
+import { auth } from "@/auth";
 import AddToCartButton from "@/components/addToCartBtn";
+import { redirect } from "next/navigation";
 
 const ProductDetails = async ({ params }) => {
+
+    const getSession = await auth();
+    if(!getSession.user){
+        redirect("/unauth-page")
+    }
+
     const getProductDetails = await fetchProductDetails(params.details);
     // console.log(getProductDetails);
 
@@ -28,7 +36,7 @@ const ProductDetails = async ({ params }) => {
                         <h2 className="text-3xl font-bold text-gray-900">{getProductDetails?.title}</h2>
                         <p className="mt-5 text-gray-800 text-xl">{getProductDetails?.price}</p>
                         <h3 className="text-lg font-bold text-gray-700">{getProductDetails?.description}</h3>
-                        <AddToCartButton />
+                        <AddToCartButton productItem={getProductDetails}/>
                     </div>
                 </div>
             </div>
